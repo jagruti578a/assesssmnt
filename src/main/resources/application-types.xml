@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<types:mule xmlns:types="http://www.mulesoft.org/schema/mule/types">
+  <types:catalog>
+    <types:type name="demo" format="json">
+      <types:shape format="weave" example="examples/j-5.json"><![CDATA[%dw 2.0
+
+type demo = {|
+  employeeld: String, 
+  FName: String, 
+  LName: String, 
+  city: String, 
+  state: String, 
+  pin: String
+|} {"example": "{\"employeeld\":\"1\",\"FName\":\"pooja\",\"LName\":\"patil\",\"city\":\"pune\",\"state\":\"MH\",\"pin\":\"422\"}"}
+
+]]></types:shape>
+    </types:type>
+  </types:catalog>
+  <types:enrichment select="#18d49c09-cd78-47f4-b3b7-c596bed1ffcf">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="demo"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+  <types:enrichment select="#6a794d64-547b-4eaa-81a2-a3d720a37ae1">
+    <types:processor-declaration>
+      <types:input-event>
+        <types:message>
+          <types:payload type="demo"/>
+        </types:message>
+      </types:input-event>
+    </types:processor-declaration>
+  </types:enrichment>
+</types:mule>

@@ -1,0 +1,53 @@
+#%RAML 1.0
+version: v1
+title: Assessment
+types:
+  employeeData: !include EmployeeDatatypes/dataType.raml
+/Employee:
+  get:
+    
+    responses:
+      200:
+        body:
+          application/json:
+            type: employeeData[]
+            example: !include EmployeeExamples/example.raml
+                        
+        
+  post:
+
+    body:
+      application/json:
+        type: employeeData
+        example: !include EmployeeExamples/postexample.raml
+    responses:
+      201:
+        body:
+          application/json:
+            example:
+              message: employee added
+  put:
+    body:
+      application/json:
+        type: employeeData
+        example: !include EmployeeExamples//postexample.raml
+    responses:
+      200:
+        body:
+          application/json:
+            example:
+              message: employee updated 
+  
+                    
+              
+
+
+                  
+          
+          
+                      
+            
+          
+          
+        
+      

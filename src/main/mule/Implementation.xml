@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<mule xmlns:salesforce="http://www.mulesoft.org/schema/mule/salesforce" xmlns:ee="http://www.mulesoft.org/schema/mule/ee/core"
+	xmlns:db="http://www.mulesoft.org/schema/mule/db"
+	xmlns="http://www.mulesoft.org/schema/mule/core" xmlns:doc="http://www.mulesoft.org/schema/mule/documentation" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.mulesoft.org/schema/mule/core http://www.mulesoft.org/schema/mule/core/current/mule.xsd
+http://www.mulesoft.org/schema/mule/db http://www.mulesoft.org/schema/mule/db/current/mule-db.xsd
+http://www.mulesoft.org/schema/mule/ee/core http://www.mulesoft.org/schema/mule/ee/core/current/mule-ee.xsd
+http://www.mulesoft.org/schema/mule/salesforce http://www.mulesoft.org/schema/mule/salesforce/current/mule-salesforce.xsd">
+	<db:config name="Database_Config" doc:name="Database Config" doc:id="b5612874-6268-4bd7-abaf-e8bb21c8ae66" >
+		<db:my-sql-connection host="db4free.net" port="3306" user="muleassignment" password="Kailasha@123" database="employee112" />
+	</db:config>
+	<salesforce:sfdc-config name="Salesforce_Config" doc:name="Salesforce Config" doc:id="465d735d-2141-484a-bf74-12207713ef86" >
+		<salesforce:cached-basic-connection username="jagruti@apisero.com" password="Pankaja@25" securityToken="nLmFsiAZZhYfrMAo3RqKAurt" />
+	</salesforce:sfdc-config>
+	<flow name="getcustomerdataFlow" doc:id="8c62db94-d618-475f-8e5b-fd4c801869bb" >
+		<scheduler doc:name="Scheduler" doc:id="cc729ce1-2af5-4335-9839-f1910dae435b" >
+			<scheduling-strategy >
+				<fixed-frequency startDelay="24" timeUnit="HOURS" />
+				<cron expression="0 2 * * *" timeZone="IST" />
+			</scheduling-strategy>
+		</scheduler>
+		<ee:transform doc:name="Transform Message" doc:id="18d49c09-cd78-47f4-b3b7-c596bed1ffcf" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+[{
+	First_Name__c: payload.FName,
+	Last_Name__c: payload.LName,
+	state__c: payload.state,
+	City__c: payload.city,
+	customerID__c: payload.employeeld as Number,
+	pin__c: payload.pin as Number
+}]]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<salesforce:create-bulk doc:name="Create bulk" doc:id="47410a2c-da4c-4438-8524-c0e3afe60b49" config-ref="Salesforce_Config" type="LazyFashion__c"/>
+		<salesforce:query-all doc:name="Query all" doc:id="560702be-7e33-43a7-a050-e3d6801bd374" config-ref="Salesforce_Config">
+			<salesforce:salesforce-query >SELECT City__c,customerID__c,First_Name__c,Last_Name__c,pin__c,state__c FROM LazyFashion__c</salesforce:salesforce-query>
+		</salesforce:query-all>
+		<ee:transform doc:name="Transform Message" doc:id="88953822-cc9e-4f7d-9ad5-ba798ba69d94" >
+			<ee:message >
+				<ee:set-payload ><![CDATA[%dw 2.0
+output application/java
+---
+payload map ( payload01 , indexOfPayload01 ) -> {
+	firstName: payload01.First_Name__c,
+	lastName: payload01.Last_Name__c,
+	pin: payload01.pin__c as String,
+	city: payload01.City__c,
+	customerId: payload01.customerID__c as String,
+	state: payload01.state__c
+}]]></ee:set-payload>
+			</ee:message>
+		</ee:transform>
+		<db:bulk-insert doc:name="Bulk insert" doc:id="0f71e4da-a709-491b-8237-8639d2077c7e" config-ref="Database_Config">
+			<db:sql >INSERT INTO customer (customer_ID, First_NAME, Last_NAME, CITY, PIN, STATE) VALUE (:customerId, :firstName, :lastName, :city, :pin, :state)</db:sql>
+		</db:bulk-insert>
+	</flow>
+</mule>

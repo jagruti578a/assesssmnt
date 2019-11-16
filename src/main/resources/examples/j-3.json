@@ -1,0 +1,33 @@
+[{
+    "employeeld": "1",
+    "FName": "pooja",
+    "LName": "patil",
+    "city": "pune",
+    "state": "MH",
+    "pin": "422"
+  },
+{
+    "employeeld": "2",
+    "FName": "aish",
+    "LName": "patil",
+    "city": "pune",
+    "state": "MH",
+    "pin": "423"
+  },
+{
+    "employeeld": "3",
+    "FName": "swara",
+    "LName": "patil",
+    "city": "pune",
+    "state": "MH",
+    "pin": "425"
+  },
+{
+    "employeeld": "4",
+    "FName": "mohu",
+    "LName": "patil",
+    "city": "pune",
+    "state": "MH",
+    "pin": "427"
+  }
+]
